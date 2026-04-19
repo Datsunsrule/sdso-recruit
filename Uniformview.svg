@@ -15,15 +15,7 @@
         font-size="46"
         fill="#F0AB00"
         letter-spacing="1">
-    <tspan font-weight="900" font-family="Arial Black, Arial, sans-serif">UNIFORM</tspan><tspan font-weight="300" font-family="Arial, sans-serif">VIEW</tspan>
+    <tspan font-weight="900" font-family="Arial Black, Arial, sans-serif">UNIFORM</tspan><tspan font-weight="300" font-family="Arial, sans-serif">VIEW</tspan><tspan font-size="18" baseline-shift="super" font-family="Arial, sans-serif" font-weight="400">TM</tspan>
   </text>
-
-  <!-- Trademark -->
-  <text x="250" y="222"
-        text-anchor="middle"
-        font-family="Arial, sans-serif"
-        font-size="18"
-        fill="#F0AB00"
-        letter-spacing="2">TM</text>
 
 </svg>
