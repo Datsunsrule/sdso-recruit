@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 260" width="500" height="260">
+
+  <!-- Outer capsule (pill/stadium shape) -->
+  <rect x="90" y="28" width="320" height="118" rx="59" ry="59"
+        fill="none" stroke="#F0AB00" stroke-width="11"/>
+
+  <!-- Inner square with slightly rounded corners -->
+  <rect x="208" y="46" width="84" height="84" rx="6" ry="6"
+        fill="none" stroke="#F0AB00" stroke-width="11"/>
+
+  <!-- Wordmark -->
+  <text x="250" y="192"
+        text-anchor="middle"
+        font-family="Arial Black, Arial, sans-serif"
+        font-size="46"
+        fill="#F0AB00"
+        letter-spacing="1">
+    <tspan font-weight="900" font-family="Arial Black, Arial, sans-serif">UNIFORM</tspan><tspan font-weight="300" font-family="Arial, sans-serif">VIEW</tspan>
+  </text>
+
+  <!-- Trademark -->
+  <text x="250" y="222"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="18"
+        fill="#F0AB00"
+        letter-spacing="2">TM</text>
+
+</svg>

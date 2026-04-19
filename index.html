@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SDSO Recruit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:     #000000;
+      --gold:      #c8a84c;
+      --gold-lt:   #e2c46a;
+      --white:     #ffffff;
+      --dim:       rgba(255,255,255,0.45);
+      --border:    rgba(200,168,76,0.22);
+      --surface:   rgba(255,255,255,0.03);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--black);
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app {
+      width: 100%; height: 100%;
+      position: relative;
+      overflow: hidden;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* ───────── SCREENS ───────── */
+    .screen {
+      position: absolute; inset: 0;
+      background: var(--black);
+      display: flex; flex-direction: column;
+      transition: transform 500ms cubic-bezier(.4,0,.2,1),
+                  opacity  500ms cubic-bezier(.4,0,.2,1);
+      will-change: transform, opacity;
+    }
+    .screen.active      { transform: translateX(0);     opacity: 1; pointer-events: all;  }
+    .screen.exit-left   { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+    .screen.enter-right { transform: translateX(100%);  opacity: 0; pointer-events: none; }
+    .screen.exit-right  { transform: translateX(100%);  opacity: 0; pointer-events: none; }
+    .screen.enter-left  { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+
+    /* ───────── TOP BAR ───────── */
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .bar-brand {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 17px; letter-spacing: .16em;
+    }
+    .bar-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; color: var(--gold); letter-spacing: .1em; margin-top: 2px;
+    }
+    .back-btn {
+      font-family: 'Share Tech Mono', monospace; font-size: 12px;
+      color: var(--gold); background: none; border: none; cursor: pointer;
+      padding: 8px 0; letter-spacing: .05em;
+      transition: color 200ms;
+    }
+    .back-btn:hover { color: var(--gold-lt); }
+
+    /* ───────── NEW CANDIDATE ───────── */
+    .nc-btn {
+      font-family: 'Share Tech Mono', monospace; font-size: 11px;
+      color: var(--dim); background: none; border: none; cursor: pointer;
+      letter-spacing: .06em; padding: 11px 0;
+      display: block; width: 100%; text-align: center;
+      transition: color 200ms;
+    }
+    .nc-btn:hover { color: var(--gold); }
+
+    /* ════════════════════════════════
+       SCREEN 1 — CANDIDATE INTAKE
+    ════════════════════════════════ */
+    #screen1 {
+      background-image:
+        linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.72)),
+        url('Sheriffcar1.png');
+      background-size: auto, cover;
+      background-position: center, center;
+      background-repeat: no-repeat, no-repeat;
+    }
+
+    .s1-body {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: stretch;
+      padding: 32px 32px 20px;
+    }
+
+    /* SDSO star badge */
+    .sdso-badge {
+      display: flex; justify-content: center; margin-bottom: 20px;
+    }
+    .sdso-badge svg {
+      width: 56px; height: 56px;
+      filter: drop-shadow(0 0 10px rgba(200,168,76,0.35));
+    }
+
+    .agency-badge {
+      display: block;
+      width: clamp(160px, 44vw, 240px);
+      margin: 0 auto 18px;
+      filter: drop-shadow(0 2px 8px rgba(200,168,76,0.35));
+    }
+    .agency-name {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: clamp(28px, 6.5vw, 46px);
+      text-align: center; letter-spacing: .07em; line-height: 1.05;
+    }
+    .agency-sub {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      text-align: center; color: var(--gold);
+      letter-spacing: .24em; text-transform: uppercase;
+      margin-top: 9px;
+    }
+    .gold-rule {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 26px 0;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 11px; }
+
+    .input-field {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px; padding: 15px 16px;
+      font-family: 'Barlow', sans-serif; font-weight: 300;
+      font-size: 16px; color: var(--white);
+      outline: none; width: 100%;
+      transition: border-color 200ms;
+      -webkit-appearance: none;
+    }
+    .input-field::placeholder { color: var(--dim); }
+    .input-field:focus { border-color: rgba(200,168,76,.65); }
+
+    .continue-btn {
+      width: 100%; padding: 15px;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 14px; letter-spacing: .16em; text-transform: uppercase;
+      border: none; border-radius: 4px; cursor: pointer;
+      position: relative; overflow: hidden;
+      margin-top: 5px;
+    }
+    .continue-btn.off {
+      background: var(--gold); color: var(--black);
+      opacity: .32; pointer-events: none;
+    }
+    .continue-btn.on {
+      background: linear-gradient(90deg,
+        var(--gold) 0%, var(--gold-lt) 20%, var(--gold) 40%,
+        var(--gold-lt) 60%, var(--gold) 80%, var(--gold-lt) 100%
+      );
+      background-size: 200% auto;
+      color: var(--black); opacity: 1;
+      animation: shimmer 2s linear infinite;
+    }
+    @keyframes shimmer {
+      from { background-position: 0% center; }
+      to   { background-position: 200% center; }
+    }
+
+    .s1-footer {
+      font-family: 'Barlow', sans-serif; font-weight: 300;
+      font-size: 10.5px; color: var(--dim);
+      text-align: center; padding: 10px 28px 14px;
+      line-height: 1.65; flex-shrink: 0;
+    }
+    .s1-uv-logo {
+      display: block;
+      width: clamp(100px, 40vw, 160px);
+      margin: 0 auto 6px;
+      opacity: 0.25;
+    }
+    .s1-volkn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; color: rgba(255,255,255,0.2);
+      text-align: center; padding: 0 28px 20px;
+      letter-spacing: .1em; flex-shrink: 0;
+    }
+
+    /* ════════════════════════════════
+       SCREEN 2 — CAMERA CAPTURE
+    ════════════════════════════════ */
+    .viewfinder {
+      flex: 1; position: relative;
+      overflow: hidden; background: #0a0a0a;
+      min-height: 0;
+    }
+    #cam-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .hud { position: absolute; inset: 0; pointer-events: none; }
+
+    .dot-grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(200,168,76,.065) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+
+    .grid-overlay {
+      position: absolute; inset: 0;
+      opacity: 0; transition: opacity 300ms;
+    }
+    .grid-overlay.on { opacity: 1; }
+    .grid-overlay svg { width: 100%; height: 100%; }
+
+    /* Corner brackets */
+    .br {
+      position: absolute; width: 30px; height: 30px;
+      border-color: var(--gold); border-style: solid; opacity: .8;
+    }
+    .br-tl { top: 12px; left: 14px; border-width: 2px 0 0 2px; }
+    .br-tr { top: 12px; right: 14px; border-width: 2px 2px 0 0; }
+    .br-bl { bottom: 12px; left: 14px; border-width: 0 0 2px 2px; }
+    .br-br { bottom: 12px; right: 14px; border-width: 0 2px 2px 0; }
+
+    .xhair {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 16px; height: 16px;
+    }
+    .xhair::before, .xhair::after {
+      content: ''; position: absolute;
+      background: rgba(200,168,76,.5);
+    }
+    .xhair::before { width: 1px; height: 100%; left: 50%; top: 0; }
+    .xhair::after  { height: 1px; width: 100%; top: 50%; left: 0; }
+
+    .scan {
+      position: absolute; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold-lt), var(--gold), transparent);
+      animation: scan 3.2s ease-in-out infinite;
+    }
+    @keyframes scan {
+      0%   { top: 0%;   opacity: 0; }
+      6%   { opacity: .8; }
+      94%  { opacity: .8; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    .hud-tl {
+      position: absolute; top: 12px; left: 12px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; color: var(--gold); letter-spacing: .1em;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .rec-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ff3434; animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hud-tr {
+      position: absolute; top: 12px; right: 12px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; color: var(--gold); letter-spacing: .1em;
+    }
+    .hud-bot {
+      position: absolute; bottom: 10px; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; color: var(--gold);
+      letter-spacing: .15em; text-transform: uppercase; white-space: nowrap;
+    }
+
+    /* Camera permission error */
+    .cam-err {
+      display: none; position: absolute; inset: 0;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; padding: 32px; text-align: center;
+    }
+    .cam-err.on { display: flex; }
+    .cam-err-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px; color: var(--gold); letter-spacing: .12em;
+    }
+    .cam-err-body {
+      font-family: 'Barlow', sans-serif; font-weight: 300;
+      font-size: 13px; color: var(--dim); line-height: 1.6;
+    }
+
+    /* Capture flash: instant white, then fade */
+    .flash {
+      position: absolute; inset: 0;
+      background: var(--white); opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+    }
+    .flash.pop { opacity: 1; transition: none; }
+
+    /* Controls area */
+    .cam-controls {
+      padding: 16px 24px 24px;
+      background: #080808; flex-shrink: 0;
+    }
+    .cam-label { text-align: center; margin-bottom: 16px; }
+    .cam-label h3 {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 17px; letter-spacing: .06em;
+    }
+    .cam-label p {
+      font-family: 'Barlow', sans-serif; font-weight: 300;
+      font-size: 12.5px; color: var(--dim);
+      margin-top: 3px; line-height: 1.45;
+    }
+    .shutter-row {
+      display: flex; align-items: center;
+      justify-content: center; gap: 44px;
+    }
+
+    /* Shutter */
+    .shutter {
+      width: 70px; height: 70px; border-radius: 50%;
+      border: 3px solid var(--gold);
+      background: transparent; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 150ms, border-color 150ms;
+      flex-shrink: 0;
+    }
+    .shutter::after {
+      content: ''; width: 56px; height: 56px;
+      border-radius: 50%; background: var(--white);
+      transition: background 150ms, transform 150ms;
+    }
+    .shutter:active { transform: scale(.92); }
+    .shutter:active::after { background: var(--gold-lt); transform: scale(.94); }
+
+    .icon-btn {
+      width: 46px; height: 46px; border-radius: 50%;
+      border: 1px solid var(--border);
+      background: rgba(200,168,76,.07);
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: border-color 200ms, background 200ms;
+      flex-shrink: 0;
+    }
+    .icon-btn:hover, .icon-btn.lit {
+      border-color: var(--gold); background: rgba(200,168,76,.18);
+    }
+    .icon-btn svg {
+      width: 19px; height: 19px;
+      stroke: var(--gold); fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    #cap-canvas { display: none; }
+
+    /* ════════════════════════════════
+       SCREEN 3 — UNIT SELECTION
+    ════════════════════════════════ */
+    .s3-body {
+      flex: 1; padding: 22px 18px 12px;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    .s3-candidate {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 18px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .s3-thumb {
+      width: 54px; height: 54px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      background: #111;
+    }
+    .s3-thumb-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; color: var(--dim);
+      letter-spacing: .12em; text-transform: uppercase;
+    }
+    .s3-thumb-name {
+      font-family: 'Rajdhani', sans-serif; font-weight: 600;
+      font-size: 15px; color: var(--white);
+      margin-top: 2px;
+    }
+    .s3-head {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 26px; letter-spacing: .06em;
+    }
+    .s3-sub {
+      font-family: 'Barlow', sans-serif; font-weight: 300;
+      font-size: 13px; color: var(--dim);
+      margin-top: 3px; margin-bottom: 20px;
+    }
+
+    .unit-list { display: flex; flex-direction: column; gap: 9px; }
+
+    .unit-btn {
+      width: 100%; background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-radius: 6px; padding: 14px 15px;
+      cursor: pointer; display: flex; align-items: center;
+      gap: 15px; text-align: left;
+      transition: border-color 200ms, border-left-color 200ms, background 200ms;
+    }
+    .unit-btn:hover, .unit-btn:active {
+      border-color: var(--gold); border-left-color: var(--gold);
+      background: rgba(200,168,76,.07);
+    }
+    .u-icon {
+      width: 38px; height: 38px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .u-icon svg {
+      width: 34px; height: 34px;
+      stroke: var(--gold); fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .u-text { flex: 1; }
+    .u-name {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 19px; letter-spacing: .06em; color: var(--white);
+    }
+    .u-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9.5px; color: var(--gold);
+      letter-spacing: .13em; text-transform: uppercase; margin-top: 2px;
+    }
+    .u-arrow { font-size: 20px; color: var(--gold); opacity: .5; line-height: 1; }
+
+    /* ════════════════════════════════
+       SCREEN 4 — RESULT & SHARE
+    ════════════════════════════════ */
+    #screen4 { flex-direction: column; }
+
+    #screen4 .top-bar {
+      background: var(--black);
+    }
+
+    .result-wrap {
+      flex: 1; position: relative;
+      overflow: hidden; min-height: 0;
+    }
+    #result-canvas { width: 100%; height: 100%; display: block; }
+
+    /* Watermarks */
+    .wm-diag {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%) rotate(-35deg);
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: clamp(32px,7vw,52px); letter-spacing: .3em;
+      color: rgba(255,255,255,.1); white-space: nowrap;
+      pointer-events: none; user-select: none;
+    }
+    .wm-tl {
+      position: absolute; top: 62px; left: 12px;
+      font-family: 'Share Tech Mono', monospace; font-size: 8.5px;
+      color: rgba(255,255,255,.4); letter-spacing: .12em;
+      pointer-events: none; line-height: 1.6;
+    }
+    .wm-br {
+      position: absolute; right: 12px;
+      font-family: 'Share Tech Mono', monospace; font-size: 7.5px;
+      color: rgba(255,255,255,.4); letter-spacing: .08em;
+      text-align: right; pointer-events: none; line-height: 1.75;
+    }
+
+    /* Bottom info overlay */
+    .result-info {
+      position: absolute; bottom: 62px; left: 18px; right: 18px;
+    }
+    .result-unit-tag {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      color: var(--gold); letter-spacing: .18em; text-transform: uppercase;
+    }
+    .result-candidate {
+      font-family: 'Barlow', sans-serif; font-weight: 300;
+      font-size: 12px; color: rgba(255,255,255,.55);
+      letter-spacing: .04em; margin-top: 3px;
+    }
+
+    /* Action buttons */
+    .result-actions {
+      padding: 13px 18px 26px;
+      display: flex; flex-direction: column; gap: 9px;
+      background: var(--black); flex-shrink: 0;
+    }
+    .btn-primary {
+      width: 100%; padding: 15px;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 14px; letter-spacing: .16em; text-transform: uppercase;
+      background: var(--gold); color: var(--black);
+      border: none; border-radius: 4px; cursor: pointer;
+      transition: background 200ms;
+    }
+    .btn-primary:hover { background: var(--gold-lt); }
+
+    .btn-outline {
+      width: 100%; padding: 13px;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 14px; letter-spacing: .16em; text-transform: uppercase;
+      background: transparent; color: var(--gold);
+      border: 1px solid var(--gold); border-radius: 4px;
+      cursor: pointer; transition: background 200ms;
+    }
+    .btn-outline:hover { background: rgba(200,168,76,.1); }
+
+    /* ════════════════════════════════
+       SCREEN 5 — UPLOAD PHOTO
+    ════════════════════════════════ */
+    .s5-body {
+      flex: 1; display: flex; flex-direction: column;
+      padding: 24px 20px 20px; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .s5-head {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 26px; letter-spacing: .06em;
+    }
+    .s5-sub {
+      font-family: 'Barlow', sans-serif; font-weight: 300;
+      font-size: 13px; color: var(--dim);
+      margin-top: 3px; margin-bottom: 20px;
+    }
+
+    /* Drop / tap zone */
+    .upload-zone {
+      flex: 1; min-height: 220px;
+      border: 1.5px dashed rgba(200,168,76,.45);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative;
+      overflow: hidden;
+      transition: border-color 200ms, background 200ms;
+      margin-bottom: 16px;
+    }
+    .upload-zone:hover { border-color: var(--gold); background: rgba(200,168,76,.04); }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+
+    .upload-placeholder {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 12px;
+      pointer-events: none;
+    }
+    .upload-placeholder svg {
+      width: 52px; height: 52px;
+      stroke: var(--gold); fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+      opacity: .7;
+    }
+    .upload-placeholder-text {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 17px; letter-spacing: .06em; color: var(--white);
+    }
+    .upload-placeholder-hint {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      color: var(--gold); letter-spacing: .12em; text-transform: uppercase;
+    }
+
+    /* Preview state */
+    #upload-preview {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: none;
+      pointer-events: none;
+    }
+    #upload-preview.on { display: block; }
+    .upload-placeholder.hidden { display: none; }
+
+    .replace-hint {
+      position: absolute; bottom: 10px; left: 0; right: 0;
+      font-family: 'Share Tech Mono', monospace; font-size: 9px;
+      color: rgba(200,168,76,.6); letter-spacing: .1em;
+      text-transform: uppercase; text-align: center;
+      pointer-events: none;
+    }
+
+    /* "or" divider on screen 2 */
+    .or-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 2px 0;
+    }
+    .or-divider::before, .or-divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--border);
+    }
+    .or-divider span {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      color: var(--dim); letter-spacing: .12em;
+    }
+
+    .upload-btn {
+      width: 100%; padding: 13px;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 14px; letter-spacing: .14em; text-transform: uppercase;
+      background: transparent; color: var(--gold);
+      border: 1px solid rgba(200,168,76,.45);
+      border-radius: 4px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: border-color 200ms, background 200ms;
+    }
+    .upload-btn:hover { border-color: var(--gold); background: rgba(200,168,76,.07); }
+    .upload-btn svg {
+      width: 17px; height: 17px;
+      stroke: var(--gold); fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    #btn-use-photo {
+      opacity: .35; pointer-events: none;
+      transition: opacity 200ms, background 200ms;
+    }
+    #btn-use-photo.ready { opacity: 1; pointer-events: all; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════════════
+       SCREEN 1 — CANDIDATE INTAKE
+  ══════════════════════════════════════ -->
+  <div id="screen1" class="screen active">
+    <div class="s1-body">
+
+<div class="agency-name">San Diego<br>Sheriff's Office</div>
+      <div class="agency-sub">Recruitment · Deputy Program</div>
+
+      <div class="gold-rule"></div>
+
+      <div class="form-group">
+        <input id="inp-email" type="email" class="input-field"
+          placeholder="yourname@email.com"
+          inputmode="email" autocomplete="off"
+          autocorrect="off" autocapitalize="off">
+        <input id="inp-phone" type="tel" class="input-field"
+          placeholder="(619) 555-0100"
+          inputmode="tel" autocomplete="off">
+        <button id="btn-continue" class="continue-btn off">
+          Continue to Uniform Photo
+        </button>
+      </div>
+    </div>
+
+    <img class="s1-uv-logo" src="Uniformview.svg" alt="Uniformview">
+    <div class="s1-footer">
+      Your information is collected solely for SDSO recruitment purposes.<br>
+      San Diego Sheriff's Office · Recruitment Division
+    </div>
+    <div class="s1-volkn">© 2026 Vultos Technical Solutions LLC · All Rights Reserved</div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 2 — CAMERA CAPTURE
+  ══════════════════════════════════════ -->
+  <div id="screen2" class="screen enter-right">
+    <div class="top-bar">
+      <div>
+        <div class="bar-brand">SDSO RECRUIT</div>
+        <div class="bar-sub">Uniform Photo Capture</div>
+      </div>
+      <button class="back-btn" id="s2-back">← Back</button>
+    </div>
+
+    <div class="viewfinder">
+      <video id="cam-video" autoplay playsinline muted></video>
+
+      <div class="hud">
+        <div class="dot-grid"></div>
+
+        <div class="grid-overlay" id="grid-overlay">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+            <line x1="33.3" y1="0"   x2="33.3" y2="100" stroke="rgba(200,168,76,.28)" stroke-width=".3"/>
+            <line x1="66.6" y1="0"   x2="66.6" y2="100" stroke="rgba(200,168,76,.28)" stroke-width=".3"/>
+            <line x1="0"   y1="33.3" x2="100"  y2="33.3" stroke="rgba(200,168,76,.28)" stroke-width=".3"/>
+            <line x1="0"   y1="66.6" x2="100"  y2="66.6" stroke="rgba(200,168,76,.28)" stroke-width=".3"/>
+          </svg>
+        </div>
+
+        <div class="hud-tl"><div class="rec-dot"></div>REC</div>
+        <div class="hud-tr">AUTO · 1×</div>
+
+        <div class="br br-tl"></div>
+        <div class="br br-tr"></div>
+        <div class="br br-bl"></div>
+        <div class="br br-br"></div>
+
+        <div class="xhair"></div>
+        <div class="scan"></div>
+        <div class="hud-bot">Full Body · Head to Toe</div>
+      </div>
+
+      <div class="cam-err" id="cam-err">
+        <div class="cam-err-title">CAMERA ACCESS REQUIRED</div>
+        <div class="cam-err-body">
+          Allow camera access when prompted,<br>
+          or enable it in your device settings to continue.
+        </div>
+      </div>
+
+      <div class="flash" id="flash"></div>
+    </div>
+
+    <div class="cam-controls">
+      <div class="cam-label">
+        <h3>Position Candidate in Frame</h3>
+        <p>Ensure the candidate is fully visible from head to toe.<br>Tap the shutter when ready.</p>
+      </div>
+      <div class="shutter-row">
+
+        <button class="icon-btn" id="btn-flip" title="Flip camera">
+          <svg viewBox="0 0 24 24">
+            <polyline points="20 9 17 6 14 9"/>
+            <path d="M17 6v12"/>
+            <polyline points="4 15 7 18 10 15"/>
+            <path d="M7 18V6"/>
+          </svg>
+        </button>
+
+        <button class="shutter" id="btn-shutter"></button>
+
+        <button class="icon-btn" id="btn-grid" title="Toggle grid">
+          <svg viewBox="0 0 24 24">
+            <line x1="8"  y1="3" x2="8"  y2="21"/>
+            <line x1="16" y1="3" x2="16" y2="21"/>
+            <line x1="3"  y1="8" x2="21" y2="8"/>
+            <line x1="3" y1="16" x2="21" y2="16"/>
+          </svg>
+        </button>
+
+      </div>
+      <div class="or-divider" style="margin-top:14px;"><span>OR</span></div>
+
+      <button class="upload-btn" id="btn-go-upload">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Upload Existing Photo
+      </button>
+
+      <button class="nc-btn" id="s2-nc">← New Candidate</button>
+    </div>
+
+    <canvas id="cap-canvas"></canvas>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 5 — UPLOAD PHOTO
+  ══════════════════════════════════════ -->
+  <div id="screen5" class="screen enter-right">
+    <div class="top-bar">
+      <div>
+        <div class="bar-brand">SDSO RECRUIT</div>
+        <div class="bar-sub">Upload Photo</div>
+      </div>
+      <button class="back-btn" id="s5-back">← Back</button>
+    </div>
+
+    <div class="s5-body">
+      <div class="s5-head">Upload a Photo</div>
+      <div class="s5-sub">Select a full-body photo from your device</div>
+
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="file-input" accept="image/*">
+        <div class="upload-placeholder" id="upload-placeholder">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <div class="upload-placeholder-text">Tap to Select a Photo</div>
+          <div class="upload-placeholder-hint">Full body · Head to toe</div>
+        </div>
+        <img id="upload-preview" alt="Selected photo">
+        <div class="replace-hint" id="replace-hint" style="display:none;">Tap to replace</div>
+      </div>
+
+      <button class="btn-primary" id="btn-use-photo">Use This Photo</button>
+      <button class="nc-btn" id="s5-nc" style="margin-top:6px;">← New Candidate</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 3 — UNIT SELECTION
+  ══════════════════════════════════════ -->
+  <div id="screen3" class="screen enter-right">
+    <div class="top-bar">
+      <div>
+        <div class="bar-brand">SDSO RECRUIT</div>
+        <div class="bar-sub">Select Deputy Assignment</div>
+      </div>
+      <button class="back-btn" id="s3-back">← Back</button>
+    </div>
+
+    <div class="s3-body">
+      <div class="s3-candidate" id="s3-candidate" style="display:none">
+        <img class="s3-thumb" id="s3-thumb" src="" alt="Candidate photo">
+        <div>
+          <div class="s3-thumb-label">Candidate Photo</div>
+          <div class="s3-thumb-name" id="s3-thumb-name"></div>
+        </div>
+      </div>
+
+      <div class="s3-head">Choose Your Unit</div>
+      <div class="s3-sub">Select the assignment you'd like to be featured in</div>
+
+      <div class="unit-list">
+
+        <!-- CANINE -->
+        <button class="unit-btn" data-unit="canine">
+          <div class="u-icon">
+            <svg viewBox="0 0 34 34">
+              <circle cx="15" cy="10" r="4.5"/>
+              <path d="M7 20c0-4.4 3.6-8 8-8s8 3.6 8 8v5H7v-5z"/>
+              <!-- leash -->
+              <path d="M23 18c1.5-1 4-.5 5.5 2"/>
+              <!-- legs -->
+              <line x1="10" y1="25" x2="9"  y2="31"/>
+              <line x1="14" y1="25" x2="13" y2="31"/>
+              <line x1="18" y1="25" x2="19" y2="31"/>
+              <line x1="22" y1="25" x2="23" y2="31"/>
+              <!-- K-9 dog head -->
+              <circle cx="28" cy="21" r="3"/>
+            </svg>
+          </div>
+          <div class="u-text">
+            <div class="u-name">Canine</div>
+            <div class="u-sub">K-9 Unit</div>
+          </div>
+          <div class="u-arrow">›</div>
+        </button>
+
+        <!-- ASTREA -->
+        <button class="unit-btn" data-unit="astrea">
+          <div class="u-icon">
+            <svg viewBox="0 0 34 34">
+              <!-- rotor blade -->
+              <line x1="5" y1="10" x2="29" y2="10" stroke-width="2"/>
+              <circle cx="17" cy="10" r="1.5" fill="#c8a84c" stroke="none"/>
+              <!-- mast -->
+              <line x1="17" y1="10" x2="17" y2="16"/>
+              <!-- fuselage -->
+              <path d="M6 16h22l2 6H4l2-6z"/>
+              <!-- tail boom -->
+              <path d="M26 19l5-2"/>
+              <!-- tail rotor -->
+              <line x1="31" y1="15" x2="31" y2="21" stroke-width="2"/>
+              <!-- skids -->
+              <line x1="8"  y1="22" x2="8"  y2="26"/>
+              <line x1="26" y1="22" x2="26" y2="26"/>
+              <line x1="5"  y1="26" x2="13" y2="26"/>
+              <line x1="23" y1="26" x2="31" y2="26"/>
+            </svg>
+          </div>
+          <div class="u-text">
+            <div class="u-name">ASTREA</div>
+            <div class="u-sub">Air Support Division</div>
+          </div>
+          <div class="u-arrow">›</div>
+        </button>
+
+        <!-- SED -->
+        <button class="unit-btn" data-unit="swat">
+          <div class="u-icon">
+            <svg viewBox="0 0 34 34">
+              <path d="M17 3l13 5.5v10.5c0 8-13 13-13 13S4 27 4 19V8.5z"/>
+              <path d="M12 17l3.5 3.5L23 13"/>
+            </svg>
+          </div>
+          <div class="u-text">
+            <div class="u-name">SED</div>
+            <div class="u-sub">Tactical Team</div>
+          </div>
+          <div class="u-arrow">›</div>
+        </button>
+
+        <!-- PATROL -->
+        <button class="unit-btn" data-unit="patrol">
+          <div class="u-icon">
+            <svg viewBox="0 0 34 34">
+              <rect x="2" y="17" width="30" height="11" rx="3"/>
+              <path d="M6 17l3.5-7h15L28 17"/>
+              <circle cx="9"  cy="28" r="3"/>
+              <circle cx="25" cy="28" r="3"/>
+              <rect x="12" y="11" width="10" height="5" rx="1"/>
+              <!-- light bar -->
+              <rect x="9" y="14" width="16" height="3" rx="1"/>
+            </svg>
+          </div>
+          <div class="u-text">
+            <div class="u-name">Patrol</div>
+            <div class="u-sub">Field Operations</div>
+          </div>
+          <div class="u-arrow">›</div>
+        </button>
+
+        <!-- DETENTIONS -->
+        <button class="unit-btn" data-unit="detentions">
+          <div class="u-icon">
+            <svg viewBox="0 0 34 34">
+              <rect x="4" y="8" width="26" height="21" rx="2"/>
+              <line x1="4"  y1="16" x2="30" y2="16"/>
+              <line x1="17" y1="8"  x2="17" y2="29"/>
+              <!-- door -->
+              <rect x="12" y="20" width="10" height="9" rx="1"/>
+              <circle cx="20" cy="24.5" r="1" fill="#c8a84c" stroke="none"/>
+              <!-- flag poles -->
+              <line x1="10" y1="8" x2="10" y2="5"/>
+              <line x1="24" y1="8" x2="24" y2="5"/>
+            </svg>
+          </div>
+          <div class="u-text">
+            <div class="u-name">Detentions</div>
+            <div class="u-sub">Detention Services</div>
+          </div>
+          <div class="u-arrow">›</div>
+        </button>
+
+      </div>
+
+      <button class="nc-btn" id="s3-nc" style="margin-top:16px;">← New Candidate</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 4 — RESULT & SHARE
+  ══════════════════════════════════════ -->
+  <div id="screen4" class="screen enter-right">
+
+    <div class="top-bar">
+      <div>
+        <div class="bar-brand">SDSO RECRUIT</div>
+        <div class="bar-sub">Your Deputy Photo</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <button class="back-btn" id="s4-back">← Back</button>
+        <button class="nc-btn" id="s4-nc" style="width:auto;padding:0;">New Candidate</button>
+      </div>
+    </div>
+
+    <div class="result-wrap">
+      <canvas id="result-canvas"></canvas>
+
+      <div class="wm-diag">SDSO RECRUIT</div>
+      <div class="wm-tl">PROOF · NOT FOR DISTRIBUTION</div>
+      <div class="wm-br" id="wm-br">
+        San Diego Sheriff's Office<br>
+        Recruitment Division<br>
+        joinsdso.com
+      </div>
+
+      <div class="result-info">
+        <div class="result-unit-tag" id="result-unit-tag"></div>
+        <div class="result-candidate" id="result-candidate"></div>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-primary" id="btn-save">Save &amp; Share</button>
+      <button class="btn-outline"  id="btn-apply">Apply Now</button>
+    </div>
+
+  </div>
+</div><!-- #app -->
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── State ── */
+  let cur        = 1;
+  let stream     = null;
+  let facing     = 'environment';
+  let captured   = null;   // data URL
+  let unit       = null;
+  let gridOn     = false;
+  let candidateEmail = '';
+
+  const UNITS = {
+    canine:     { label: 'Canine · K-9 Unit',              tint: 'rgba(120,75,30,.22)'   },
+    astrea:     { label: 'ASTREA · Air Support Division',   tint: 'rgba(30,65,120,.24)'   },
+    swat:       { label: 'SED · Tactical Team',             tint: 'rgba(15,15,35,.32)'    },
+    patrol:     { label: 'Patrol · Field Operations',       tint: 'rgba(0,50,95,.22)'     },
+    detentions: { label: 'Detentions · Detention Services', tint: 'rgba(50,32,14,.22)'    },
+  };
+
+  /* ── Element refs ── */
+  const $ = id => document.getElementById(id);
+  const inpEmail    = $('inp-email');
+  const inpPhone    = $('inp-phone');
+  const btnContinue = $('btn-continue');
+  const camVideo    = $('cam-video');
+  const capCanvas   = $('cap-canvas');
+  const flashEl     = $('flash');
+  const camErr      = $('cam-err');
+  const gridOverlay = $('grid-overlay');
+  const btnGrid     = $('btn-grid');
+  const resultCanvas= $('result-canvas');
+  const wmBr        = $('wm-br');
+
+  /* ═══════════════════════════════
+     NAVIGATION
+  ═══════════════════════════════ */
+  // fwd param lets callers override direction (needed for screen5→3)
+  function goTo(n, fwd) {
+    const fromEl  = $(`screen${cur}`);
+    const toEl    = $(`screen${n}`);
+    const forward = fwd !== undefined ? fwd : n > cur;
+
+    toEl.className = `screen ${forward ? 'enter-right' : 'enter-left'}`;
+    void toEl.offsetHeight; // reflow
+
+    fromEl.className = `screen ${forward ? 'exit-left' : 'exit-right'}`;
+    toEl.className   = 'screen active';
+
+    cur = n;
+
+    if (n === 2) startCamera();
+    else         stopCamera();
+
+    if (n === 3 && captured) {
+      const thumb = $('s3-thumb');
+      const nameEl = $('s3-thumb-name');
+      thumb.src = captured;
+      nameEl.textContent = inpEmail ? inpEmail.value || 'Candidate' : 'Candidate';
+      $('s3-candidate').style.display = 'flex';
+    }
+  }
+
+  function resetAll() {
+    inpEmail.value = '';
+    inpPhone.value = '';
+    candidateEmail = '';
+    captured = null;
+    unit     = null;
+    updateBtn();
+    stopCamera();
+    clearUpload();
+
+    [1, 2, 3, 4, 5].forEach(i => {
+      const el = $(`screen${i}`);
+      if (el) el.className = `screen ${i === 1 ? 'active' : 'enter-right'}`;
+    });
+    cur = 1;
+  }
+
+  /* ═══════════════════════════════
+     SCREEN 1
+  ═══════════════════════════════ */
+  function updateBtn() {
+    const ok = inpEmail.value.trim().length > 0 && inpPhone.value.trim().length > 0;
+    btnContinue.className = `continue-btn ${ok ? 'on' : 'off'}`;
+  }
+
+  inpEmail.addEventListener('input', updateBtn);
+  inpPhone.addEventListener('input', updateBtn);
+  btnContinue.addEventListener('click', () => {
+    if (btnContinue.classList.contains('on')) {
+      candidateEmail = inpEmail.value.trim();
+      goTo(2);
+    }
+  });
+
+  /* ═══════════════════════════════
+     SCREEN 2 — CAMERA
+  ═══════════════════════════════ */
+  async function startCamera() {
+    stopCamera();
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facing, width: { ideal: 1080 }, height: { ideal: 1920 } },
+        audio: false,
+      });
+      camVideo.srcObject = stream;
+      camErr.classList.remove('on');
+    } catch (e) {
+      console.warn('Camera:', e.name);
+      camErr.classList.add('on');
+    }
+  }
+
+  function stopCamera() {
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    camVideo.srcObject = null;
+  }
+
+  $('s2-back').addEventListener('click', () => resetAll());
+  $('s2-nc').addEventListener('click', resetAll);
+
+  $('btn-flip').addEventListener('click', () => {
+    facing = facing === 'environment' ? 'user' : 'environment';
+    startCamera();
+  });
+
+  $('btn-grid').addEventListener('click', () => {
+    gridOn = !gridOn;
+    gridOverlay.classList.toggle('on', gridOn);
+    btnGrid.classList.toggle('lit', gridOn);
+  });
+
+  $('btn-shutter').addEventListener('click', () => {
+    /* Flash: instant white then fade */
+    flashEl.classList.add('pop');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      flashEl.classList.remove('pop');
+    }));
+
+    /* Capture frame */
+    if (camVideo.videoWidth) {
+      capCanvas.width  = camVideo.videoWidth;
+      capCanvas.height = camVideo.videoHeight;
+      const ctx = capCanvas.getContext('2d');
+      if (facing === 'user') { ctx.translate(capCanvas.width, 0); ctx.scale(-1, 1); }
+      ctx.drawImage(camVideo, 0, 0);
+      captured = capCanvas.toDataURL('image/jpeg', 0.92);
+    }
+
+    goTo(3);
+  });
+
+  /* ═══════════════════════════════
+     SCREEN 2 — UPLOAD BUTTON
+  ═══════════════════════════════ */
+  $('btn-go-upload').addEventListener('click', () => goTo(5, true));
+
+  /* ═══════════════════════════════
+     SCREEN 5 — UPLOAD PHOTO
+  ═══════════════════════════════ */
+  const fileInput      = $('file-input');
+  const uploadPreview  = $('upload-preview');
+  const uploadPH       = $('upload-placeholder');
+  const replaceHint    = $('replace-hint');
+  const btnUsePhoto    = $('btn-use-photo');
+
+  function clearUpload() {
+    fileInput.value  = '';
+    uploadPreview.src = '';
+    uploadPreview.classList.remove('on');
+    uploadPH.classList.remove('hidden');
+    replaceHint.style.display = 'none';
+    btnUsePhoto.classList.remove('ready');
+    btnUsePhoto.style.opacity = '.35';
+    btnUsePhoto.style.pointerEvents = 'none';
+  }
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      captured = e.target.result;
+      uploadPreview.src = captured;
+      uploadPreview.classList.add('on');
+      uploadPH.classList.add('hidden');
+      replaceHint.style.display = 'block';
+      btnUsePhoto.classList.add('ready');
+      btnUsePhoto.style.opacity = '1';
+      btnUsePhoto.style.pointerEvents = 'all';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  btnUsePhoto.addEventListener('click', () => {
+    if (captured) goTo(3, true);
+  });
+
+  $('s5-back').addEventListener('click', () => goTo(2, false));
+  $('s5-nc').addEventListener('click', resetAll);
+
+  /* ═══════════════════════════════
+     SCREEN 3 — UNIT SELECTION
+  ═══════════════════════════════ */
+  $('s3-back').addEventListener('click', () => goTo(2));
+  $('s3-nc').addEventListener('click', resetAll);
+
+  document.querySelectorAll('.unit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      unit = btn.dataset.unit;
+      $('result-unit-tag').textContent  = UNITS[unit].label;
+      $('result-candidate').textContent = candidateEmail || '';
+      goTo(4);
+      renderResult();
+    });
+  });
+
+  /* ═══════════════════════════════
+     SCREEN 4 — RESULT
+  ═══════════════════════════════ */
+  $('s4-back').addEventListener('click', () => goTo(3, false));
+  $('s4-nc').addEventListener('click', resetAll);
+
+  const STRIP = 54;
+
+  function renderResult() {
+    const wrap = resultCanvas.parentElement;
+    resultCanvas.width  = wrap.clientWidth;
+    resultCanvas.height = wrap.clientHeight;
+    wmBr.style.bottom   = '62px';
+
+    const ctx    = resultCanvas.getContext('2d');
+    const W      = resultCanvas.width;
+    const H      = resultCanvas.height;
+    const photoY = STRIP;
+    const photoH = H - STRIP * 2;
+
+    drawStrip(ctx, W, 0,         STRIP, true);
+    drawStrip(ctx, W, H - STRIP, STRIP, false);
+
+    if      (unit === 'canine') renderCanine (ctx, W, photoY, photoH);
+    else if (unit === 'swat')   renderStatic (ctx, W, photoY, photoH, 'SED.png');
+    else if (unit === 'astrea') renderStatic (ctx, W, photoY, photoH, 'ASTREA.png');
+    else if (unit === 'patrol')     renderStatic (ctx, W, photoY, photoH, 'Deputy1.jpg');
+    else if (unit === 'detentions') renderStatic (ctx, W, photoY, photoH, 'Jail.png');
+    else                            renderGeneric(ctx, W, photoY, photoH);
+  }
+
+  /* ── Black strip with job classification text ── */
+  function drawStrip(ctx, W, y, h, isHeader) {
+    const label = (UNITS[unit] || {}).label || '';
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, y, W, h);
+
+    ctx.fillStyle = 'rgba(200,168,76,0.35)';
+    ctx.fillRect(0, isHeader ? y + h - 1 : y, W, 1);
+
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (isHeader) {
+      ctx.font      = 'bold 15px Rajdhani, sans-serif';
+      ctx.fillStyle = '#c8a84c';
+      ctx.fillText(label.toUpperCase(), W / 2, y + h / 2);
+    } else {
+      ctx.font      = '400 9px "Share Tech Mono", monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText("SAN DIEGO SHERIFF'S OFFICE · RECRUITMENT DIVISION", W / 2, y + h * 0.30);
+      ctx.font      = 'bold 13px Rajdhani, sans-serif';
+      ctx.fillStyle = '#c8a84c';
+      ctx.fillText(label.toUpperCase(), W / 2, y + h * 0.70);
+    }
+  }
+
+  /* ── Canine: K9.png clipped to photo area, strips redrawn after load ── */
+  function renderCanine(ctx, W, startY, photoH) {
+    const bg = new Image();
+    bg.onload = () => {
+      const bgScale = W / bg.width;
+      const bgH     = bg.height * bgScale;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, startY, W, photoH);
+      ctx.clip();
+      ctx.drawImage(bg, 0, startY, W, bgH);
+      ctx.restore();
+      if (bgH < photoH) {
+        ctx.fillStyle = '#0a0a0a';
+        ctx.fillRect(0, startY + bgH, W, photoH - bgH);
+      }
+      drawStrip(ctx, W, 0,               STRIP, true);
+      drawStrip(ctx, W, startY + photoH, STRIP, false);
+    };
+    bg.src = 'K92.png';
+  }
+
+  /* ── Static: any template image clipped to photo area ── */
+  function renderStatic(ctx, W, startY, photoH, src) {
+    const bg = new Image();
+    bg.onload = () => {
+      const bgScale = W / bg.width;
+      const bgH     = bg.height * bgScale;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, startY, W, photoH);
+      ctx.clip();
+      ctx.drawImage(bg, 0, startY, W, bgH);
+      ctx.restore();
+      if (bgH < photoH) {
+        ctx.fillStyle = '#0a0a0a';
+        ctx.fillRect(0, startY + bgH, W, photoH - bgH);
+      }
+      drawStrip(ctx, W, 0,               STRIP, true);
+      drawStrip(ctx, W, startY + photoH, STRIP, false);
+    };
+    bg.src = src;
+  }
+
+  /* ── Generic: tint placeholder for units without a template yet ── */
+  function renderGeneric(ctx, W, startY, photoH) {
+    function finish() {
+      ctx.fillStyle = (UNITS[unit] || {}).tint || 'transparent';
+      ctx.fillRect(0, startY, W, photoH);
+      ctx.save();
+      ctx.font         = '400 12px "Share Tech Mono", monospace';
+      ctx.fillStyle    = 'rgba(200,168,76,.7)';
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('[ AI composite rendered in production ]', W / 2, startY + photoH / 2);
+      ctx.restore();
+    }
+    if (captured) {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.max(W / img.width, photoH / img.height);
+        const dx    = (W - img.width  * scale) / 2;
+        const dy    = startY + (photoH - img.height * scale) / 2;
+        ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
+        ctx.fillStyle = 'rgba(0,0,0,.25)';
+        ctx.fillRect(0, startY, W, photoH);
+        finish();
+      };
+      img.src = captured;
+    } else {
+      ctx.fillStyle = '#111';
+      ctx.fillRect(0, startY, W, photoH);
+      finish();
+    }
+  }
+
+  $('btn-save').addEventListener('click', function () {
+    const a = document.createElement('a');
+    a.download = 'sdso-recruit.jpg';
+    a.href = resultCanvas.toDataURL('image/jpeg', 0.92);
+    a.click();
+    this.textContent = 'Saved!';
+    setTimeout(() => { this.textContent = 'Save & Share'; }, 2000);
+  });
+
+  $('btn-apply').addEventListener('click', () => {
+    window.open('https://www.joinsdsheriff.net/', '_blank');
+  });
+
+  /* Init */
+  updateBtn();
+})();
+</script>
+</body>
+</html>
