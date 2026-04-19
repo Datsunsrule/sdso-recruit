@@ -117,10 +117,19 @@
       margin: 0 auto 18px;
       filter: drop-shadow(0 2px 8px rgba(200,168,76,0.35));
     }
+    .agency-title-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; margin-bottom: 4px;
+    }
+    .agency-title-badge {
+      width: clamp(48px, 12vw, 68px);
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 8px rgba(200,168,76,0.3));
+    }
     .agency-name {
       font-family: 'Rajdhani', sans-serif; font-weight: 700;
       font-size: clamp(28px, 6.5vw, 46px);
-      text-align: center; letter-spacing: .07em; line-height: 1.05;
+      text-align: left; letter-spacing: .07em; line-height: 1.05;
     }
     .agency-sub {
       font-family: 'Share Tech Mono', monospace; font-size: 10px;
@@ -636,7 +645,10 @@
   <div id="screen1" class="screen active">
     <div class="s1-body">
 
-<div class="agency-name">San Diego<br>Sheriff's Office</div>
+<div class="agency-title-row">
+  <img class="agency-title-badge" src="Badge_of_the_San_Diego_County_Sheriff's_Office.png" alt="SDSO Badge">
+  <div class="agency-name">San Diego<br>Sheriff's Office</div>
+</div>
       <div class="agency-sub">Recruitment · Deputy Program</div>
 
       <div class="gold-rule"></div>

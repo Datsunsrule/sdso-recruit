@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <!-- Metallic star gradient -->
+    <radialGradient id="starGrad" cx="38%" cy="32%" r="70%">
+      <stop offset="0%"   stop-color="#F0F0F0"/>
+      <stop offset="40%"  stop-color="#C8C8C8"/>
+      <stop offset="100%" stop-color="#888888"/>
+    </radialGradient>
+    <!-- Seal background gradient -->
+    <radialGradient id="sealGrad" cx="45%" cy="40%" r="60%">
+      <stop offset="0%"   stop-color="#F8F8F8"/>
+      <stop offset="100%" stop-color="#DCDCDC"/>
+    </radialGradient>
+    <!-- Text arc paths -->
+    <path id="topArc"    d="M 118,250 A 132,132 0 0,0 382,250"/>
+    <path id="bottomArc" d="M 118,250 A 132,132 0 0,1 382,250"/>
+    <!-- Star clip -->
+    <clipPath id="starClip">
+      <path d="M 250,30 L 291,164 L 422,113 L 343,229 L 465,299 L 324,309 L 346,448 L 250,345 L 154,448 L 176,309 L 35,299 L 157,229 L 78,113 L 209,164 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── Drop shadow ── -->
+  <path d="M 250,30 L 291,164 L 422,113 L 343,229 L 465,299 L 324,309 L 346,448 L 250,345 L 154,448 L 176,309 L 35,299 L 157,229 L 78,113 L 209,164 Z"
+        fill="rgba(0,0,0,0.22)" transform="translate(5,6)"/>
+
+  <!-- ── Star body ── -->
+  <path d="M 250,30 L 291,164 L 422,113 L 343,229 L 465,299 L 324,309 L 346,448 L 250,345 L 154,448 L 176,309 L 35,299 L 157,229 L 78,113 L 209,164 Z"
+        fill="url(#starGrad)" stroke="#787878" stroke-width="3"/>
+
+  <!-- ── Inner star border (decorative inset line) ── -->
+  <path d="M 250,52 L 285,170 L 397,127 L 330,224 L 441,296 L 316,305 L 335,430 L 250,334 L 165,430 L 184,305 L 59,296 L 170,224 L 103,127 L 215,170 Z"
+        fill="none" stroke="rgba(120,120,120,0.6)" stroke-width="1.5"/>
+
+  <!-- ── Decorative diamonds at inner valley points ── -->
+  <g fill="#B0B0B0" stroke="#888" stroke-width="0.8">
+    <polygon points="291,164 298,158 291,152 284,158"/>
+    <polygon points="343,229 350,223 343,217 336,223"/>
+    <polygon points="324,309 331,303 324,297 317,303"/>
+    <polygon points="250,345 257,339 250,333 243,339"/>
+    <polygon points="176,309 183,303 176,297 169,303"/>
+    <polygon points="157,229 164,223 157,217 150,223"/>
+    <polygon points="209,164 216,158 209,152 202,158"/>
+  </g>
+
+  <!-- ── Decorative flourishes at outer star tips ── -->
+  <g fill="none" stroke="rgba(100,100,100,0.5)" stroke-width="1">
+    <!-- Top tip -->
+    <path d="M 240,42 Q 250,32 260,42"/>
+    <path d="M 244,50 Q 250,40 256,50"/>
+    <!-- Upper-right tip -->
+    <path d="M 416,108 Q 422,99 428,108"/>
+    <!-- Right tip -->
+    <path d="M 459,292 Q 466,299 459,306"/>
+    <!-- Lower-right tip -->
+    <path d="M 341,443 Q 348,449 341,455"/>
+    <!-- Lower-left tip -->
+    <path d="M 159,443 Q 152,449 159,455"/>
+    <!-- Left tip -->
+    <path d="M 41,292 Q 34,299 41,306"/>
+    <!-- Upper-left tip -->
+    <path d="M 72,108 Q 78,99 84,108"/>
+  </g>
+
+  <!-- ── Circular seal background ── -->
+  <circle cx="250" cy="250" r="148" fill="url(#sealGrad)"/>
+
+  <!-- ── Outer blue ring ── -->
+  <circle cx="250" cy="250" r="148" fill="none" stroke="#1a3a9a" stroke-width="5"/>
+  <circle cx="250" cy="250" r="141" fill="none" stroke="#1a3a9a" stroke-width="1"/>
+
+  <!-- ── Inner dotted ring ── -->
+  <circle cx="250" cy="250" r="112" fill="none" stroke="#1a3a9a" stroke-width="1.2" stroke-dasharray="3,3"/>
+
+  <!-- ── SHERIFF curved text ── -->
+  <text font-family="Arial Black, Arial, sans-serif" font-weight="900"
+        font-size="27" fill="#1a3a9a" letter-spacing="5">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">SHERIFF</textPath>
+  </text>
+
+  <!-- ── EUREKA text ── -->
+  <text x="250" y="174" text-anchor="middle"
+        font-family="Arial, sans-serif" font-size="11" fill="#444" letter-spacing="4">· EUREKA ·</text>
+
+  <!-- ── Sun rays ── -->
+  <g stroke="#D4A800" stroke-width="1.2" opacity="0.45">
+    <line x1="250" y1="184" x2="250" y2="168"/>
+    <line x1="250" y1="184" x2="264" y2="171"/>
+    <line x1="250" y1="184" x2="236" y2="171"/>
+    <line x1="250" y1="184" x2="272" y2="178"/>
+    <line x1="250" y1="184" x2="228" y2="178"/>
+    <line x1="250" y1="184" x2="274" y2="187"/>
+    <line x1="250" y1="184" x2="226" y2="187"/>
+  </g>
+
+  <!-- ── Mountains ── -->
+  <polygon points="205,238 222,205 239,238" fill="#B4B4B4" stroke="#999" stroke-width="0.7"/>
+  <polygon points="228,238 250,197 272,238" fill="#C4C4C4" stroke="#999" stroke-width="0.7"/>
+  <polygon points="258,238 278,212 298,238" fill="#ACACAC" stroke="#999" stroke-width="0.7"/>
+  <!-- Snowcap on center mountain -->
+  <polygon points="244,205 250,197 256,205 250,208" fill="#E8E8E8"/>
+
+  <!-- ── Bay / Water ── -->
+  <path d="M 172,240 Q 200,233 215,240 Q 235,247 255,240 Q 275,233 295,240 Q 315,247 328,240 L 328,255 L 172,255 Z"
+        fill="rgba(90,120,200,0.22)"/>
+
+  <!-- ── Ships ── -->
+  <g fill="#999" stroke="#888" stroke-width="0.6" transform="translate(198,234)">
+    <rect x="-7" y="0" width="14" height="5" rx="2"/>
+    <line x1="0" y1="0" x2="0" y2="-16" stroke="#999" stroke-width="1"/>
+    <line x1="-5" y1="-8" x2="5" y2="-8" stroke="#999" stroke-width="0.5"/>
+    <polygon points="0,-8 -4,-4 4,-4" fill="#CCC"/>
+  </g>
+  <g fill="#999" stroke="#888" stroke-width="0.6" transform="translate(223,237)">
+    <rect x="-5" y="0" width="10" height="4" rx="1.5"/>
+    <line x1="0" y1="0" x2="0" y2="-12" stroke="#999" stroke-width="0.8"/>
+    <polygon points="0,-12 -3,-7 3,-7" fill="#CCC"/>
+  </g>
+
+  <!-- ── Minerva figure (seated, left side) ── -->
+  <g transform="translate(208,292)">
+    <!-- Flowing robe/body -->
+    <path d="M -10,-32 Q -14,0 -8,22 Q 0,26 8,22 Q 14,0 10,-32 Z"
+          fill="#B0B0B0" stroke="#999" stroke-width="0.7"/>
+    <!-- Head -->
+    <circle cx="0" cy="-40" r="9" fill="#BEBEBE" stroke="#999" stroke-width="0.7"/>
+    <!-- Helmet -->
+    <path d="M -9,-40 Q -9,-54 0,-56 Q 9,-54 9,-40" fill="#A8A8A8" stroke="#999" stroke-width="0.7"/>
+    <!-- Plume -->
+    <path d="M -3,-54 Q -6,-64 0,-62 Q 4,-60 2,-54" fill="#888"/>
+    <!-- Spear -->
+    <line x1="14" y1="-50" x2="14" y2="22" stroke="#A0A0A0" stroke-width="1.5"/>
+    <polygon points="14,-50 11,-56 17,-56" fill="#AAAAAA"/>
+    <!-- Shield suggestion -->
+    <ellipse cx="-14" cy="-10" rx="6" ry="10" fill="#A0A0A0" stroke="#888" stroke-width="0.7"/>
+  </g>
+
+  <!-- ── Grizzly Bear ── -->
+  <g transform="translate(302,295)">
+    <!-- Body -->
+    <ellipse cx="0" cy="5" rx="22" ry="14" fill="#A4A4A4" stroke="#888" stroke-width="0.7"/>
+    <!-- Head -->
+    <circle cx="18" cy="-5" r="11" fill="#A4A4A4" stroke="#888" stroke-width="0.7"/>
+    <!-- Snout -->
+    <ellipse cx="26" cy="-2" rx="5" ry="4" fill="#989898"/>
+    <!-- Ear -->
+    <circle cx="14" cy="-14" r="3.5" fill="#A0A0A0" stroke="#888" stroke-width="0.5"/>
+    <!-- Legs -->
+    <rect x="-18" y="16" width="6" height="9" rx="3" fill="#9C9C9C"/>
+    <rect x="-8"  y="16" width="6" height="9" rx="3" fill="#9C9C9C"/>
+    <rect x="2"   y="16" width="6" height="9" rx="3" fill="#9C9C9C"/>
+  </g>
+
+  <!-- ── Wheat sheaves (bottom left of seal) ── -->
+  <g transform="translate(182,300)" opacity="0.7" stroke="#BBAA55" stroke-width="1.2">
+    <line x1="-4" y1="0" x2="-8" y2="-20"/>
+    <line x1="0"  y1="0" x2="0"  y2="-22"/>
+    <line x1="4"  y1="0" x2="8"  y2="-20"/>
+    <ellipse cx="-8" cy="-22" rx="2.5" ry="5" fill="#CCBB66" stroke="none"/>
+    <ellipse cx="0"  cy="-24" rx="2.5" ry="5" fill="#CCBB66" stroke="none"/>
+    <ellipse cx="8"  cy="-22" rx="2.5" ry="5" fill="#CCBB66" stroke="none"/>
+  </g>
+
+  <!-- ── Mining pick (bottom right suggestion) ── -->
+  <g transform="translate(315,300)" opacity="0.5" stroke="#999" stroke-width="1.2">
+    <line x1="-8" y1="8" x2="8" y2="-8"/>
+    <path d="M 2,-12 Q 10,-16 10,-6 Q 8,-2 4,2" fill="none"/>
+  </g>
+
+  <!-- ── Side stars ── -->
+  <text x="113" y="258" text-anchor="middle" font-size="20" fill="#1a3a9a">★</text>
+  <text x="387" y="258" text-anchor="middle" font-size="20" fill="#1a3a9a">★</text>
+
+  <!-- ── SAN DIEGO COUNTY curved text ── -->
+  <text font-family="Arial Black, Arial, sans-serif" font-weight="900"
+        font-size="18" fill="#1a3a9a" letter-spacing="2">
+    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">SAN DIEGO COUNTY</textPath>
+  </text>
+
+  <!-- ── 1850 cartouche ── -->
+  <rect x="212" y="403" width="76" height="26" rx="5"
+        fill="#D2D2D2" stroke="#909090" stroke-width="1.8"/>
+  <rect x="215" y="406" width="70" height="20" rx="3"
+        fill="none" stroke="#B8B8B8" stroke-width="0.7"/>
+  <text x="250" y="421" text-anchor="middle"
+        font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#444">1850</text>
+
+</svg>
