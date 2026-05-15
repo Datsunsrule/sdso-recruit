@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Arial', sans-serif; font-size: 11px; color: #1a1a2e; }
+  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8760a; padding-bottom: 12px; margin-bottom: 16px; }
+  .agency-name { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+  .report-title { font-size: 13px; font-weight: 700; color: #c8760a; text-transform: uppercase; letter-spacing: 0.08em; }
+  .meta { font-size: 10px; color: #6b7280; }
+  .section { margin-bottom: 16px; }
+  .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7280; border-bottom: 1px solid #e1e4e8; padding-bottom: 4px; margin-bottom: 8px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .field { margin-bottom: 6px; }
+  .field-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; margin-bottom: 2px; }
+  .field-value { font-size: 11px; color: #1a1a2e; border-bottom: 1px solid #e1e4e8; padding-bottom: 2px; min-height: 16px; }
+  .narrative { border: 1px solid #e1e4e8; padding: 8px; border-radius: 4px; min-height: 80px; white-space: pre-wrap; line-height: 1.5; }
+  .signature-block { margin-top: 32px; display: flex; gap: 40px; }
+  .sig-line { flex: 1; border-top: 1px solid #1a1a2e; padding-top: 4px; font-size: 10px; color: #6b7280; }
+  .footer { position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid #e1e4e8; padding-top: 6px; display: flex; justify-content: space-between; font-size: 9px; color: #9ca3af; }
+  .draft-watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 80px; font-weight: 900; color: rgba(220,38,38,0.12); letter-spacing: 0.1em; z-index: -1; pointer-events: none; }
+  @media print { .footer { position: fixed; bottom: 0; } }
+</style>
+</head>
+<body>
+{% if isDraft %}<div class="draft-watermark">DRAFT</div>{% endif %}
+
+<div class="header">
+  <div>
+    <div class="agency-name">{{ agency.name if agency else "PatrolRMS" }}</div>
+    <div class="meta">ORI: {{ fields.ncic_ori if fields.ncic_ori else "N/A" }}</div>
+  </div>
+  <div style="text-align:right">
+    <div class="report-title">{% block title %}Report{% endblock %}</div>
+    <div class="meta">Case #: {{ caseRecord.case_number if caseRecord else "—" }}</div>
+    <div class="meta">Report #: {{ fields.report_number if fields.report_number else "—" }}</div>
+  </div>
+</div>
+
+{% block content %}{% endblock %}
+
+<div class="signature-block">
+  <div class="sig-line">
+    Reporting Officer: {{ submitter.full_name if submitter else "________________________" }}<br>
+    Badge: {{ submitter.badge_number if submitter else "____________" }}
+  </div>
+  <div class="sig-line">
+    Date/Time: {{ fields.report_date if fields.report_date else "________________________" }}
+  </div>
+  <div class="sig-line">
+    Supervisor Approval: ________________________
+  </div>
+</div>
+
+<div class="footer">
+  <span>{{ agency.name if agency else "PatrolRMS" }} — Confidential Law Enforcement Record</span>
+  <span>Generated: {{ generatedAt }}</span>
+</div>
+</body>
+</html>

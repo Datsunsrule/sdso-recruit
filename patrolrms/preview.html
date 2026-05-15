@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>PatrolRMS – UI Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --accent: #c8760a; --accent-hov: #a3600a; --accent-light: #fff3e0;
+    --bg: #f0f2f5; --surface: #fff; --surface-alt: #f8f9fa;
+    --border: #e1e4e8; --text: #1a1a2e; --text-sub: #6b7280; --text-muted: #9ca3af;
+    --success: #16a34a; --success-light: #dcfce7;
+    --warning: #d97706; --warning-light: #fef3c7;
+    --danger: #dc2626; --danger-light: #fee2e2;
+  }
+  html, body { height: 100%; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; color: var(--text); background: #111; overflow: hidden; }
+  /* Phone frame */
+  .frame { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 24px; overflow: auto; padding: 24px; }
+  .phone { width: 390px; height: 844px; background: var(--bg); border-radius: 44px; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 2px rgba(255,255,255,0.1); display: flex; flex-direction: column; flex-shrink: 0; }
+  .screen { display: none; flex-direction: column; height: 100%; }
+  .screen.active { display: flex; }
+  /* Scrollable content */
+  .scroll { flex: 1; overflow-y: auto; }
+  .scroll::-webkit-scrollbar { width: 3px; }
+  .scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  /* TopBar */
+  .topbar { display: flex; align-items: center; background: #000; color: #fff; padding: 12px 16px; gap: 10px; min-height: 54px; flex-shrink: 0; }
+  .topbar-back { background: none; border: none; color: #fff; opacity: 0.8; cursor: pointer; font-size: 18px; }
+  .topbar-title { font-weight: 700; font-size: 14px; flex: 1; }
+  .topbar-sub { font-size: 11px; opacity: 0.55; }
+  /* StatusFooter */
+  .statusbar { display: flex; justify-content: space-between; background: #000; color: rgba(255,255,255,0.4); font-size: 10px; padding: 6px 16px; flex-shrink: 0; }
+  /* Btn */
+  .btn { display: inline-flex; align-items: center; justify-content: center; font-weight: 600; border-radius: 10px; padding: 10px 16px; font-size: 13px; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(200,118,10,0.35); }
+  .btn-primary:hover { background: var(--accent-hov); }
+  .btn-default { background: var(--surface-alt); border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-sub); }
+  .btn-dark { background: #1a1a2e; color: #fff; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-full { width: 100%; }
+  /* Card */
+  .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  /* Section label */
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-sub); padding-top: 16px; padding-bottom: 4px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  /* Input */
+  .inp { width: 100%; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--text); font-family: inherit; outline: none; }
+  .inp:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,118,10,0.15); }
+  .inp[readonly] { opacity: 0.6; }
+  /* Grid */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .col2 { grid-column: span 2; }
+  /* Fld */
+  .fld label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+  /* Badge */
+  .badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 999px; display: inline-block; }
+  .badge-open { background: var(--accent-light); color: var(--accent); }
+  .badge-active { background: var(--warning-light); color: var(--warning); }
+  .badge-closed { background: var(--border); color: var(--text-sub); }
+  .badge-high { background: var(--danger-light); color: var(--danger); }
+  .badge-med { background: var(--warning-light); color: var(--warning); }
+  .badge-low { background: var(--success-light); color: var(--success); }
+  .badge-pending { background: var(--warning-light); color: var(--warning); }
+  .badge-approved { background: var(--success-light); color: var(--success); }
+  /* Priority bar */
+  .pbar { width: 4px; border-radius: 2px; background: currentColor; align-self: stretch; flex-shrink: 0; }
+  /* Tab strip */
+  .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0; overflow-x: auto; }
+  .tab { padding: 12px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-sub); white-space: nowrap; font-family: inherit; }
+  .tab.active { border-bottom-color: var(--accent); color: var(--accent); }
+  /* Nav overlay for demo */
+  .nav-label { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 8px 20px; border-radius: 999px; font-size: 12px; z-index: 100; pointer-events: none; }
+
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
+  .shake { animation: shake 0.4s ease; }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+  <!-- ── PHONE 1: Login ─────────────────────────────── -->
+  <div class="phone">
+    <div class="screen active" id="s-login" style="background: linear-gradient(160deg,#3d2b1a 0%,#1a1005 100%); position:relative;">
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.08) 40%,rgba(0,0,0,0.32) 100%);pointer-events:none;"></div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;z-index:1;">
+        <div style="width:100%;max-width:300px;background:rgba(0,0,0,0.08);backdrop-filter:blur(3px);border-radius:20px;padding:28px;">
+          <!-- Logo -->
+          <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;">
+            <svg width="58" height="58" viewBox="0 0 56 56">
+              <circle cx="28" cy="28" r="28" fill="#000"/>
+              <polygon points="28,4 50,16 50,40 28,52 6,40 6,16" fill="none" stroke="#c8760a" stroke-width="1.5"/>
+              <line x1="28" y1="4" x2="28" y2="52" stroke="#c8760a" stroke-width="0.8" opacity="0.6"/>
+              <line x1="6" y1="16" x2="50" y2="40" stroke="#c8760a" stroke-width="0.8" opacity="0.6"/>
+              <line x1="50" y1="16" x2="6" y2="40" stroke="#c8760a" stroke-width="0.8" opacity="0.6"/>
+              <circle cx="28" cy="28" r="6" fill="none" stroke="#c8760a" stroke-width="1.5"/>
+              <circle cx="28" cy="28" r="2" fill="#c8760a"/>
+            </svg>
+            <div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#e8dfc0;margin-top:10px;">PatrolRMS</div>
+            <div style="font-size:16px;font-weight:800;color:#fff;margin-top:2px;text-align:center;">San Clemente Sheriff's Office</div>
+          </div>
+          <!-- Fields -->
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div>
+              <label style="display:block;font-size:10px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em;">Badge Number</label>
+              <input value="C003" style="width:100%;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.24);border-radius:10px;padding:10px 12px;color:#fff;font-size:13px;outline:none;" />
+            </div>
+            <div>
+              <label style="display:block;font-size:10px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em;">PIN</label>
+              <input type="password" value="1234" style="width:100%;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.24);border-radius:10px;padding:10px 12px;color:#fff;font-size:13px;outline:none;letter-spacing:0.3em;" />
+            </div>
+            <button class="btn btn-primary btn-full" style="margin-top:4px;padding:14px;">Sign In</button>
+          </div>
+          <p style="text-align:center;color:rgba(255,255,255,0.25);font-size:10px;margin-top:18px;text-transform:uppercase;letter-spacing:0.1em;">Authorized Personnel Only</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PHONE 2: Case Queue ─────────────────────────── -->
+  <div class="phone">
+    <div class="screen active" id="s-cases">
+      <div class="topbar">
+        <span style="font-size:20px;">📋</span>
+        <div style="flex:1"><div class="topbar-title">Case Queue</div><div class="topbar-sub">Springfield Office</div></div>
+        <div style="position:relative;">
+          <button class="btn btn-dark" style="font-size:11px;padding:6px 12px;">Queue</button>
+          <span style="position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:999px;display:flex;align-items:center;justify-content:center;">3</span>
+        </div>
+        <button style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;margin-left:6px;">⌂</button>
+      </div>
+      <!-- Search -->
+      <div style="display:flex;gap:8px;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border);">
+        <div style="flex:1;position:relative;">
+          <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;">🔍</span>
+          <input placeholder="Search cases…" class="inp" style="padding-left:30px;" />
+        </div>
+        <button class="btn btn-primary">+ New</button>
+      </div>
+      <!-- Cases -->
+      <div class="scroll" style="padding:12px 16px;display:flex;flex-direction:column;gap:8px;">
+        <!-- Case cards -->
+        <div class="card" style="overflow:hidden;">
+          <div style="display:flex;">
+            <div class="pbar" style="color:var(--danger);margin:0 0 0 2px;"></div>
+            <div style="flex:1;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <span style="font-weight:700;font-size:13px;">2024-SPR-00412</span>
+                <div style="display:flex;gap:6px;"><span class="badge badge-high">High</span><span class="badge badge-open">Open</span></div>
+              </div>
+              <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">211 PC – Robbery</div>
+              <div style="display:flex;gap:6px;margin-top:4px;font-size:11px;color:var(--text-muted);">
+                <span>Dep. J. Ramos</span><span>·</span><span>2024-11-14</span>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding:10px 12px;">
+            <button class="btn btn-primary btn-full" style="padding:8px;">Open Case →</button>
+          </div>
+        </div>
+
+        <div class="card" style="overflow:hidden;">
+          <div style="display:flex;">
+            <div class="pbar" style="color:var(--warning);margin:0 0 0 2px;"></div>
+            <div style="flex:1;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <span style="font-weight:700;font-size:13px;">2024-SPR-00411</span>
+                <div style="display:flex;gap:6px;"><span class="badge badge-med">Med</span><span class="badge badge-active">Active</span></div>
+              </div>
+              <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">459 PC – Burglary</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Cpl. M. Torres · 2024-11-14</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="overflow:hidden;">
+          <div style="display:flex;">
+            <div class="pbar" style="color:var(--success);margin:0 0 0 2px;"></div>
+            <div style="flex:1;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <span style="font-weight:700;font-size:13px;">2024-SPR-00409</span>
+                <div style="display:flex;gap:6px;"><span class="badge badge-low">Low</span><span class="badge badge-closed">Closed</span></div>
+              </div>
+              <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">594 PC – Vandalism</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Dep. K. Daniels · 2024-11-13</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="overflow:hidden;">
+          <div style="display:flex;">
+            <div class="pbar" style="color:var(--danger);margin:0 0 0 2px;"></div>
+            <div style="flex:1;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <span style="font-weight:700;font-size:13px;">2024-SPR-00407</span>
+                <div style="display:flex;gap:6px;"><span class="badge badge-high">High</span><span class="badge badge-open">Open</span></div>
+              </div>
+              <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">273.5 PC – Domestic Violence</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Dep. A. Cross · 2024-11-13</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="overflow:hidden;">
+          <div style="display:flex;">
+            <div class="pbar" style="color:var(--warning);margin:0 0 0 2px;"></div>
+            <div style="flex:1;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <span style="font-weight:700;font-size:13px;">2024-SPR-00405</span>
+                <div style="display:flex;gap:6px;"><span class="badge badge-med">Med</span><span class="badge badge-open">Open</span></div>
+              </div>
+              <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">23152 VC – DUI Alcohol</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Dep. S. Liu · 2024-11-12</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="statusbar"><span>C003</span><span>Cases</span><span>SPR</span></div>
+    </div>
+  </div>
+
+  <!-- ── PHONE 3: Case Report Form ─────────────────── -->
+  <div class="phone">
+    <div class="screen active" id="s-form">
+      <div class="topbar">
+        <button class="topbar-back">‹</button>
+        <span style="font-size:16px;">📋</span>
+        <div style="flex:1"><div class="topbar-title">Case / Incident Report</div><div class="topbar-sub">2024-SPR-00412</div></div>
+        <span style="color:rgba(255,255,255,0.4);font-size:11px;">✓ Saved</span>
+      </div>
+      <div class="scroll" style="padding:16px;">
+        <div class="section-label">Routing</div>
+        <div class="grid2">
+          <div class="fld"><label>Case Number</label><input class="inp" readonly value="2024-SPR-00412" /></div>
+          <div class="fld"><label>Report Date</label><input class="inp" readonly value="11/14/2024" /></div>
+          <div class="fld"><label>Incident Date</label><input class="inp" type="date" value="2024-11-14" /></div>
+          <div class="fld"><label>Incident Time</label><input class="inp" type="time" value="21:35" /></div>
+          <div class="fld col2"><label>Crime Type</label><input class="inp" readonly value="211 PC – Robbery" /></div>
+          <div class="fld"><label>Beat</label><input class="inp" value="14B" /></div>
+          <div class="fld"><label>Station</label><input class="inp" readonly value="Springfield Office" /></div>
+        </div>
+
+        <div class="section-label">Incident Location</div>
+        <div class="grid2">
+          <div class="fld col2"><label>Location</label><input class="inp" value="1420 Main St, Convenience Store parking lot" /></div>
+          <div class="fld"><label>City</label><input class="inp" value="Springfield" /></div>
+          <div class="fld"><label>State</label><input class="inp" value="CA" /></div>
+        </div>
+
+        <div class="section-label">Victim Information</div>
+        <div class="grid2">
+          <div class="fld"><label>Name</label><input class="inp" value="Chen, Michael A." /></div>
+          <div class="fld"><label>DOB</label><input class="inp" type="date" value="1985-03-22" /></div>
+          <div class="fld"><label>Phone</label><input class="inp" value="(541) 555-0192" /></div>
+          <div class="fld"><label>Address</label><input class="inp" value="88 Oak Ave" /></div>
+        </div>
+
+        <div class="section-label">Narrative</div>
+        <div style="position:relative;">
+          <textarea rows="5" class="inp" style="resize:vertical;min-height:110px;">On 11/14/2024 at approximately 2135 hours, I responded to the 1420 Main St 7-Eleven regarding an armed robbery. Upon arrival I made contact with the victim, Michael Chen, who stated a male subject approached him in the parking lot and demanded his wallet at knifepoint. The subject fled northbound on foot toward Elm St.</textarea>
+          <button style="position:absolute;bottom:8px;right:8px;display:flex;align-items:center;gap:4px;font-size:11px;padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface-alt);color:var(--text-sub);cursor:pointer;font-family:inherit;">🎤 Dictate</button>
+        </div>
+
+        <div class="section-label">Charges / Disposition</div>
+        <div class="grid2">
+          <div class="fld col2"><label>Charges</label><input class="inp" value="211 PC – Robbery" /></div>
+          <div class="fld col2"><label>Disposition</label>
+            <select class="inp"><option selected>Open</option><option>Active</option><option>Closed</option></select>
+          </div>
+        </div>
+        <div style="height:80px;"></div>
+      </div>
+      <div style="display:flex;gap:8px;padding:12px 16px;background:#fff;border-top:1px solid var(--border);flex-shrink:0;">
+        <button class="btn btn-default" style="flex:1;">Save Draft</button>
+        <button class="btn btn-primary" style="flex:1;">Submit for Approval</button>
+      </div>
+      <div class="statusbar"><span>C003</span><span>Case Report</span><span>SPR</span></div>
+    </div>
+  </div>
+
+  <!-- ── PHONE 4: Supervisor Queue ──────────────────── -->
+  <div class="phone">
+    <div class="screen active" id="s-queue">
+      <div class="topbar">
+        <button class="topbar-back">‹</button>
+        <div style="flex:1"><div class="topbar-title">Supervisor Queue</div><div class="topbar-sub">Springfield Office</div></div>
+        <span style="background:rgba(200,118,10,0.2);color:var(--accent);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">SPR</span>
+      </div>
+      <!-- Stats -->
+      <div style="display:flex;gap:0;border-bottom:1px solid var(--border);background:#fff;">
+        <div style="flex:1;text-align:center;padding:12px 8px;">
+          <div style="font-size:22px;font-weight:700;color:var(--warning);">3</div>
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);">Pending</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:12px 8px;border-left:1px solid var(--border);">
+          <div style="font-size:22px;font-weight:700;color:var(--success);">7</div>
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);">Approved Today</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:12px 8px;border-left:1px solid var(--border);">
+          <div style="font-size:22px;font-weight:700;color:var(--danger);">1</div>
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);">Rejected Today</div>
+        </div>
+      </div>
+      <!-- Queue items -->
+      <div class="scroll" style="padding:12px 16px;display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-sub);">Case/Incident (2)</div>
+
+        <div class="card" style="overflow:hidden;">
+          <div style="padding:12px;">
+            <div style="display:flex;justify-content:space-between;gap:8px;">
+              <div>
+                <div style="font-weight:700;font-size:13px;">2024-SPR-00412</div>
+                <div style="font-size:11px;color:var(--text-sub);">Dep. J. Ramos · Badge D003</div>
+                <div style="font-size:11px;color:var(--text-muted);">211 PC – Robbery</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                <span class="badge badge-pending">Pending</span>
+                <span style="font-size:10px;font-weight:700;color:var(--warning);background:var(--warning-light);padding:2px 8px;border-radius:999px;">2h 14m</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;border-top:1px solid var(--border);">
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--success);background:none;border:none;cursor:pointer;border-right:1px solid var(--border);font-family:inherit;">✓ Approve</button>
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--danger);background:none;border:none;cursor:pointer;border-right:1px solid var(--border);font-family:inherit;">✕ Reject</button>
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--text-sub);background:none;border:none;cursor:pointer;font-family:inherit;">View</button>
+          </div>
+        </div>
+
+        <div class="card" style="overflow:hidden;">
+          <div style="padding:12px;">
+            <div style="display:flex;justify-content:space-between;gap:8px;">
+              <div>
+                <div style="font-weight:700;font-size:13px;">2024-SPR-00410</div>
+                <div style="font-size:11px;color:var(--text-sub);">Dep. C. Holt · Badge D002</div>
+                <div style="font-size:11px;color:var(--text-muted);">459 PC – Burglary</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                <span class="badge badge-pending">Pending</span>
+                <span style="font-size:10px;font-weight:700;color:var(--warning);background:var(--warning-light);padding:2px 8px;border-radius:999px;">47m</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;border-top:1px solid var(--border);">
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--success);background:none;border:none;cursor:pointer;border-right:1px solid var(--border);font-family:inherit;">✓ Approve</button>
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--danger);background:none;border:none;cursor:pointer;border-right:1px solid var(--border);font-family:inherit;">✕ Reject</button>
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--text-sub);background:none;border:none;cursor:pointer;font-family:inherit;">View</button>
+          </div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-sub);margin-top:4px;">Arrest (1)</div>
+
+        <div class="card" style="overflow:hidden;">
+          <div style="padding:12px;">
+            <div style="display:flex;justify-content:space-between;gap:8px;">
+              <div>
+                <div style="font-weight:700;font-size:13px;">2024-SPR-00408</div>
+                <div style="font-size:11px;color:var(--text-sub);">Cpl. M. Torres · Badge C001</div>
+                <div style="font-size:11px;color:var(--text-muted);">11377 HS – Possession Meth</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                <span class="badge badge-pending">Pending</span>
+                <span style="font-size:10px;font-weight:700;color:var(--warning);background:var(--warning-light);padding:2px 8px;border-radius:999px;">1h 05m</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;border-top:1px solid var(--border);">
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--success);background:none;border:none;cursor:pointer;border-right:1px solid var(--border);font-family:inherit;">✓ Approve</button>
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--danger);background:none;border:none;cursor:pointer;border-right:1px solid var(--border);font-family:inherit;">✕ Reject</button>
+            <button style="flex:1;padding:10px;font-size:12px;font-weight:700;color:var(--text-sub);background:none;border:none;cursor:pointer;font-family:inherit;">View</button>
+          </div>
+        </div>
+      </div>
+      <div class="statusbar"><span>C003</span><span>Queue</span><span>SPR</span></div>
+    </div>
+  </div>
+
+</div><!-- /frame -->
+
+<script>
+  // Click any screen label to navigate (demo only)
+  document.querySelectorAll('.topbar-back').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const hint = document.querySelector('.nav-label') || document.createElement('div');
+      hint.className = 'nav-label';
+      hint.textContent = '← Back (demo — no navigation)';
+      document.body.appendChild(hint);
+      setTimeout(() => hint.remove(), 2000);
+    });
+  });
+</script>
+</body>
+</html>

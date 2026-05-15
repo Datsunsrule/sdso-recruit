@@ -1,0 +1,61 @@
+{% extends "reports/base.html" %}
+{% block title %}Case / Incident Report{% endblock %}
+{% block content %}
+<div class="section">
+  <div class="section-label">Routing</div>
+  <div class="grid">
+    <div class="field"><div class="field-label">Case Number</div><div class="field-value">{{ fields.case_number }}</div></div>
+    <div class="field"><div class="field-label">Report Date</div><div class="field-value">{{ fields.report_date }}</div></div>
+    <div class="field"><div class="field-label">Incident Date</div><div class="field-value">{{ fields.incident_date }}</div></div>
+    <div class="field"><div class="field-label">Incident Time</div><div class="field-value">{{ fields.incident_time }}</div></div>
+    <div class="field"><div class="field-label">Crime Type</div><div class="field-value">{{ fields.crime_type }}</div></div>
+    <div class="field"><div class="field-label">Beat</div><div class="field-value">{{ fields.beat }}</div></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-label">Incident Location</div>
+  <div class="grid">
+    <div class="field"><div class="field-label">Location</div><div class="field-value">{{ fields.incident_location }}</div></div>
+    <div class="field"><div class="field-label">City</div><div class="field-value">{{ fields.city }}</div></div>
+    <div class="field"><div class="field-label">State</div><div class="field-value">{{ fields.state }}</div></div>
+    <div class="field"><div class="field-label">ZIP</div><div class="field-value">{{ fields.zip }}</div></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-label">Victim Information</div>
+  <div class="grid">
+    <div class="field"><div class="field-label">Name</div><div class="field-value">{{ fields.victim_name }}</div></div>
+    <div class="field"><div class="field-label">DOB</div><div class="field-value">{{ fields.victim_dob }}</div></div>
+    <div class="field"><div class="field-label">Phone</div><div class="field-value">{{ fields.victim_phone }}</div></div>
+    <div class="field"><div class="field-label">Address</div><div class="field-value">{{ fields.victim_address }}</div></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-label">Suspect Information</div>
+  <div class="grid">
+    <div class="field"><div class="field-label">Name</div><div class="field-value">{{ fields.suspect_name }}</div></div>
+    <div class="field"><div class="field-label">DOB</div><div class="field-value">{{ fields.suspect_dob }}</div></div>
+    <div class="field"><div class="field-label">Race</div><div class="field-value">{{ fields.suspect_race }}</div></div>
+    <div class="field"><div class="field-label">Sex</div><div class="field-value">{{ fields.suspect_sex }}</div></div>
+    <div class="field"><div class="field-label">Height</div><div class="field-value">{{ fields.suspect_height }}</div></div>
+    <div class="field"><div class="field-label">Weight</div><div class="field-value">{{ fields.suspect_weight }}</div></div>
+    <div class="field"><div class="field-label">Hair</div><div class="field-value">{{ fields.suspect_hair }}</div></div>
+    <div class="field"><div class="field-label">Eyes</div><div class="field-value">{{ fields.suspect_eyes }}</div></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-label">Narrative</div>
+  <div class="narrative">{{ fields.narrative }}</div>
+</div>
+<div class="section">
+  <div class="section-label">Evidence / Property</div>
+  <div class="narrative">{{ fields.evidence_notes }}</div>
+</div>
+<div class="section">
+  <div class="section-label">Charges / Disposition</div>
+  <div class="grid">
+    <div class="field"><div class="field-label">Charges</div><div class="field-value">{{ fields.charges }}</div></div>
+    <div class="field"><div class="field-label">Disposition</div><div class="field-value">{{ fields.disposition }}</div></div>
+  </div>
+</div>
+{% endblock %}
